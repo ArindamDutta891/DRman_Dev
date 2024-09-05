@@ -9,14 +9,14 @@
 
 Evaluation 1
 Initial Analysis
--Generating a DID registry creation script
--Integration with the bifold application
+- Generating a DID registry creation script
+- Integration with the bifold application
 
 Evaluation 2
 Coding and Analysis
--Scripts to add access to members of an organization or registry
--Improvise the Bifold app to add members and access from the admin side
--Integration with AnoCreds
+- Scripts to add access to members of an organization or registry
+- Improvise the Bifold app to add members and access from the admin side
+- Integration with AnoCreds
 
 Evaluation 3
 Code Changes and Application testing 
