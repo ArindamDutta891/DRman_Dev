@@ -1,20 +1,31 @@
-## Contributing
+## Deliverables
+-Generating a DID registry creation script for the Bifold application
+-Scripts to add access to members of an organization or registry
+-Scripts to update access control for the DID registry
+-Integration with Hyperledger AnoCreds specifications
 
-We greatly value the feedback and contributions of our users. We have a simple process in place to facilitate this:
 
-### Bugs and New Features
+### Milestone 
 
-We keep a distinction between New Features and Bugs/Issues. We try to minimise the noise in our Github Issues stream by first having a conversation on [DRMAN Slack](https://slack.drman.io). Simply sign up and join one of the following channels:
+#Evaluation 1:
+Generating a DID registry creation script
+Integration with the bifold application
+#Evaluation 2:
+Scripts to add access to members of an organization or registry
+Improvise the Bifold app to add members and access from the admin side
+Integration with AnoCreds
+#Evaluation 3: 
+Application testing 
+- Generation of DIDregistry scripts
+- Scripts verification using anocreds
+- Bifold wallet must send a request to the DID application for the generation of scripts
+- End-to-end testing
+- Bug Fixes
 
-- User Issues can be raised in our [User Issues channel](https://drman.slack.com/app_redirect?channel=user-issues).
-- New Features or Enhancements can be discussed in our [CLI Development channel](https://drman.slack.com/app_redirect?channel=cli-development).
+Evaluation 4: Oct 6 to Nov 6.
+- Dev Deployment, Bug Fixes and Functional Testing
+- Deployment to Staging Bug fixes and testing
+- Final Deployment to production and Go Live
+- Final Presentation and review
 
-After accepting a new feature or confirming that a bug was found, an Issue may be raised filling in the provided Issue Template on the [GitHub Issue Tracker](https://github.com/drman/drman/issues/new).
 
-**Unfortunately we will close any Github Issues that have not followed this process of prior discussion.**
-
-### Pull Requests
-
-Pull Requests are _always_ very welcome, but require the initial discussion on Slack followed by a Github Issue as described above. The PR template is to be filled in before submission, ensuring that it is _linked back_ to the Github Issue number by replacing `#XXX` with the appropriate Issue reference.
-
-Each PR should also be accompanied by a passing test(s) proving it's validity (where feasible). The feasibility of the test will emerge in the initial discussions on Slack and in the Github Issue.
