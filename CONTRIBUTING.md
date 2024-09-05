@@ -1,8 +1,8 @@
 ## Deliverables
--Generating a DID registry creation script for the Bifold application
--Scripts to add access to members of an organization or registry
--Scripts to update access control for the DID registry
--Integration with Hyperledger AnoCreds specifications
+- Generating a DID registry creation script for the Bifold application
+- Scripts to add access to members of an organization or registry
+- Scripts to update access control for the DID registry
+- Integration with Hyperledger AnoCreds specifications
 
 
 ### Milestone 
