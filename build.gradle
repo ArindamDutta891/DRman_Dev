@@ -5,7 +5,16 @@ import static org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 plugins {
 	id('groovy')
 	id('com.jfrog.bintray') version '1.8.4'
+	 id 'com.gradle.build-scan' version '1.16'
 }
+
+
+buildScan {
+    licenseAgreementUrl = 'https://gradle.com/help/legal-terms-of-use'
+    licenseAgree = 'yes'
+}
+sourceCompatibility = '17'
+targetCompatibility = '17'
 
 String userHome = System.getProperty('user.home')
 ext.installBinDir = "${userHome}/.drman/bin"
