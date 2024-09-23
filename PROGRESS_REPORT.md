@@ -1,4 +1,11 @@
-# August 5, 2024
+#September 24, 2024
+-Integration of Bifold and Drman application 
+-Multiple Errors encountered. 
+-Tried Running the application cannot establish connection
+-404 errors observed. 
+- Working on the issue fixes
+
+# September 4, 2024
 ## Things in Progress:
 - Runtime error, registries not getting generated
 - Anocreds package mismatch issues encountered
