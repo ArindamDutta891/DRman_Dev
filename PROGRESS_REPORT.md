@@ -1,4 +1,19 @@
-#September 24, 2024
+# October 16, 2024
+-Integrated with Bifold and Drman Application
+-Connectivity established between both applications
+-Application unable to run with failure multiple errors encountered
+
+### Things to be done
+- multiple package related errors encountered
+- application unable to run
+- working on the bug fixes
+
+###Next Action Plan
+- Bug fixes and proceedings with the deployment
+
+
+
+# September 24, 2024
 -Integration of Bifold and Drman application 
 -Multiple Errors encountered. 
 -Tried Running the application cannot establish connection
