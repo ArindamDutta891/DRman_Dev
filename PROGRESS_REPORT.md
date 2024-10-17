@@ -8,7 +8,7 @@
 - application unable to run
 - working on the bug fixes
 
-###Next Action Plan
+### Next Action Plan
 - Bug fixes and proceedings with the deployment
 
 
