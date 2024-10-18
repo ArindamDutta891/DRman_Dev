@@ -21,7 +21,8 @@ function __drm_current() {
     local candidate="$1"
     
     echo ""
-    
+
+    # If a specific candidate is provided
     if [ -n "$candidate" ]; then
         __drman_determine_current_version "$candidate"
         if [ -n "$CURRENT" ]; then
@@ -30,6 +31,7 @@ function __drm_current() {
             __drman_echo_red "Not using any version of ${candidate}"
         fi
     else
+        # If no specific candidate is provided, iterate over all candidates
         local installed_count=0
         for candidate in "${DRMAN_CANDIDATES[@]}"; do
             # Skip empty entries due to incompatibility
@@ -46,6 +48,7 @@ function __drm_current() {
             fi
         done
 
+        # If no candidates are in use
         if [ $installed_count -eq 0 ]; then
             __drman_echo_no_colour 'No candidates are in use'
         fi
@@ -59,7 +62,7 @@ function __drman_determine_current_version() {
 
     # Check if the candidate directory exists in DRMAN_CANDIDATES_DIR
     present=$(__drman_path_contains "${DRMAN_CANDIDATES_DIR}/${candidate}")
-    
+
     if [[ "$present" == 'true' ]]; then
         # Use appropriate command based on the operating system
         if [[ "$solaris" == true ]]; then
@@ -75,10 +78,10 @@ function __drman_determine_current_version() {
             CURRENT=$(readlink "${DRMAN_CANDIDATES_DIR}/${candidate}/current" | sed "s!${DRMAN_CANDIDATES_DIR}/${candidate}/!!g")
         fi
     else
-        CURRENT=""
+        CURRENT=""  # Reset CURRENT if candidate is not present
     fi
 }
 
 # Example of how to use the script:
-# __drm_current "my_candidate"   # For a specific candidate
-# __drm_current                   # For all candidates
+# __drm_current "my_candidate"   # To display version for a specific candidate
+# __drm_current                   # To display versions for all candidates

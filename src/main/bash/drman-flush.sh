@@ -16,48 +16,49 @@
 #   limitations under the License.
 #
 
+# Function to flush specified components of the DRMAN environment
 function __drm_flush() {
-	local qualifier="$1"
+    local qualifier="$1"
 
-	case "$qualifier" in
-	broadcast)
-		if [[ -f "${DRMAN_DIR}/var/broadcast_id" ]]; then
-			rm "${DRMAN_DIR}/var/broadcast_id"
-			rm "${DRMAN_DIR}/var/broadcast"
-			__drman_echo_green "Broadcast has been flushed."
-		else
-			__drman_echo_no_colour "No prior broadcast found so not flushed."
-		fi
-		;;
-	version)
-		if [[ -f "${DRMAN_DIR}/var/version" ]]; then
-			rm "${DRMAN_DIR}/var/version"
-			__drman_echo_green "Version file has been flushed."
-		fi
-		;;
-	archives)
-		__drman_cleanup_folder "archives"
-		;;
-	temp)
-		__drman_cleanup_folder "tmp"
-		;;
-	tmp)
-		__drman_cleanup_folder "tmp"
-		;;
-	*)
-		__drman_echo_red "Stop! Please specify what you want to flush."
-		;;
-	esac
+    case "$qualifier" in
+        broadcast)
+            if [[ -f "${DRMAN_DIR}/var/broadcast_id" ]]; then
+                rm -f "${DRMAN_DIR}/var/broadcast_id" "${DRMAN_DIR}/var/broadcast"
+                __drman_echo_green "Broadcast has been flushed."
+            else
+                __drman_echo_no_colour "No prior broadcast found so not flushed."
+            fi
+            ;;
+        version)
+            if [[ -f "${DRMAN_DIR}/var/version" ]]; then
+                rm -f "${DRMAN_DIR}/var/version"
+                __drman_echo_green "Version file has been flushed."
+            else
+                __drman_echo_no_colour "No version file found so not flushed."
+            fi
+            ;;
+        archives|temp|tmp)
+            __drman_cleanup_folder "$qualifier"
+            ;;
+        *)
+            __drman_echo_red "Stop! Please specify what you want to flush."
+            ;;
+    esac
 }
 
+# Function to clean up a specified folder
 function __drman_cleanup_folder() {
-	local folder="$1"
-	drman_cleanup_dir="${DRMAN_DIR}/${folder}"
-	drman_cleanup_disk_usage=$(du -sh "$drman_cleanup_dir")
-	drman_cleanup_count=$(ls -1 "$drman_cleanup_dir" | wc -l)
+    local folder="$1"
+    local cleanup_dir="${DRMAN_DIR}/${folder}"
+    
+    # Get the disk usage and count of items before cleanup
+    local cleanup_disk_usage=$(du -sh "$cleanup_dir" 2>/dev/null)
+    local cleanup_count=$(find "$cleanup_dir" -mindepth 1 -maxdepth 1 | wc -l)
 
-	rm -rf "${DRMAN_DIR}/${folder}"
-	mkdir "${DRMAN_DIR}/${folder}"
+    # Clean up the folder
+    rm -rf "$cleanup_dir"
+    mkdir -p "$cleanup_dir"
 
-	__drman_echo_green "${drman_cleanup_count} archive(s) flushed, freeing ${drman_cleanup_disk_usage}."
+    # Report the cleanup results
+    __drman_echo_green "${cleanup_count} archive(s) flushed, freeing ${cleanup_disk_usage}."
 }

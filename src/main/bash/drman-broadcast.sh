@@ -16,10 +16,12 @@
 #   limitations under the License.
 #
 
+# Displays the current broadcast text.
 function __drm_broadcast() {
-	if [ "$BROADCAST_OLD_TEXT" ]; then
-		__drman_echo_cyan "$BROADCAST_OLD_TEXT"
-	else
-		__drman_echo_cyan "$BROADCAST_LIVE_TEXT"
-	fi
+    # Check if the old broadcast text is set
+    if [ "$BROADCAST_OLD_TEXT" ]; then
+        __drman_echo_cyan "$BROADCAST_OLD_TEXT"  # Output old broadcast text
+    else
+        __drman_echo_cyan "$BROADCAST_LIVE_TEXT"  # Output live broadcast text if old is not set
+    fi
 }

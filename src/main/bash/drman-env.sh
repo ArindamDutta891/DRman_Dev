@@ -16,28 +16,31 @@
 #   limitations under the License.
 #
 
+# Function to load candidate versions from the .drmanrc file
 function __drm_env() {
-	readonly drmanrc='.drmanrc'
+    readonly drmanrc='.drmanrc'
 
-	if [[ ! -f "$drmanrc" ]]; then
-		__drman_echo_red "No $drmanrc file found."
-		echo ""
-		__drman_echo_yellow "Please create one before using this command."
+    # Check if the .drmanrc file exists
+    if [[ ! -f "$drmanrc" ]]; then
+        __drman_echo_red "No $drmanrc file found."
+        echo ""
+        __drman_echo_yellow "Please create one before using this command."
+        return 1
+    fi
 
-		return 1
-	fi
+    local line_number=0
 
-	local line_number=0
+    # Read the .drmanrc file line by line
+    while IFS= read -r line || [[ -n $line ]]; do
+        # Validate the format of each line
+        if [[ ! $line =~ ^[[:lower:]]+=.+$ ]]; then
+            __drman_echo_red "${drmanrc}:${line_number}: Invalid candidate format! Expected 'candidate=version' but found '$line'"
+            return 1
+        fi
 
-	while IFS= read -r line || [[ -n $line ]]; do
-		if [[ ! $line =~ ^[[:lower:]]+=.+$ ]]; then
-			__drman_echo_red "${drmanrc}:${line_number}: Invalid candidate format! Expected 'candidate=version' but found '$line'"
+        # Extract candidate and version, then use them
+        __drm_use "${line%=*}" "${line#*=}"
 
-			return 1
-		fi
-
-		__drm_use "${line%=*}" "${line#*=}"
-
-		((line_number++))
-	done < "$drmanrc"
+        ((line_number++))  # Increment line number for error reporting
+    done < "$drmanrc"  # Read from the .drmanrc file
 }
