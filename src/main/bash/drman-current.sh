@@ -16,58 +16,69 @@
 #   limitations under the License.
 #
 
+# Function to display the current version of a specified candidate or all candidates
 function __drm_current() {
-	local candidate="$1"
+    local candidate="$1"
+    
+    echo ""
+    
+    if [ -n "$candidate" ]; then
+        __drman_determine_current_version "$candidate"
+        if [ -n "$CURRENT" ]; then
+            __drman_echo_no_colour "Using ${candidate} version ${CURRENT}"
+        else
+            __drman_echo_red "Not using any version of ${candidate}"
+        fi
+    else
+        local installed_count=0
+        for candidate in "${DRMAN_CANDIDATES[@]}"; do
+            # Skip empty entries due to incompatibility
+            if [ -n "$candidate" ]; then
+                __drman_determine_current_version "$candidate"
+                if [ -n "$CURRENT" ]; then
+                    if [ $installed_count -eq 0 ]; then
+                        __drman_echo_no_colour 'Using:'
+                        echo ""
+                    fi
+                    __drman_echo_no_colour "${candidate}: ${CURRENT}"
+                    ((installed_count++))
+                fi
+            fi
+        done
 
-	echo ""
-	if [ -n "$candidate" ]; then
-		__drman_determine_current_version "$candidate"
-		if [ -n "$CURRENT" ]; then
-			__drman_echo_no_colour "Using ${candidate} version ${CURRENT}"
-		else
-			__drman_echo_red "Not using any version of ${candidate}"
-		fi
-	else
-		local installed_count=0
-		for ((i = 0; i <= ${#DRMAN_CANDIDATES[*]}; i++)); do
-			# Eliminate empty entries due to incompatibility
-			if [[ -n ${DRMAN_CANDIDATES[${i}]} ]]; then
-				__drman_determine_current_version "${DRMAN_CANDIDATES[${i}]}"
-				if [ -n "$CURRENT" ]; then
-					if [ ${installed_count} -eq 0 ]; then
-						__drman_echo_no_colour 'Using:'
-						echo ""
-					fi
-					__drman_echo_no_colour "${DRMAN_CANDIDATES[${i}]}: ${CURRENT}"
-					((installed_count += 1))
-				fi
-			fi
-		done
-
-		if [ ${installed_count} -eq 0 ]; then
-			__drman_echo_no_colour 'No candidates are in use'
-		fi
-	fi
+        if [ $installed_count -eq 0 ]; then
+            __drman_echo_no_colour 'No candidates are in use'
+        fi
+    fi
 }
 
+# Function to determine the current version of a specified candidate
 function __drman_determine_current_version() {
-	local candidate present
+    local candidate="$1"
+    local present
 
-	candidate="$1"
-	present=$(__drman_path_contains "${DRMAN_CANDIDATES_DIR}/${candidate}")
-	if [[ "$present" == 'true' ]]; then
-		if [[ "$solaris" == true ]]; then
-			CURRENT=$(echo $PATH | gsed -r "s|${DRMAN_CANDIDATES_DIR}/${candidate}/([^/]+)/bin|!!\1!!|1" | gsed -r "s|^.*!!(.+)!!.*$|\1|g")
-		elif [[ "$darwin" == true ]]; then
-			CURRENT=$(echo $PATH | sed -E "s|${DRMAN_CANDIDATES_DIR}/${candidate}/([^/]+)/bin|!!\1!!|1" | sed -E "s|^.*!!(.+)!!.*$|\1|g")
-		else
-			CURRENT=$(echo $PATH | sed -r "s|${DRMAN_CANDIDATES_DIR}/${candidate}/([^/]+)/bin|!!\1!!|1" | sed -r "s|^.*!!(.+)!!.*$|\1|g")
-		fi
+    # Check if the candidate directory exists in DRMAN_CANDIDATES_DIR
+    present=$(__drman_path_contains "${DRMAN_CANDIDATES_DIR}/${candidate}")
+    
+    if [[ "$present" == 'true' ]]; then
+        # Use appropriate command based on the operating system
+        if [[ "$solaris" == true ]]; then
+            CURRENT=$(echo "$PATH" | gsed -r "s|${DRMAN_CANDIDATES_DIR}/${candidate}/([^/]+)/bin|!!\1!!|1" | gsed -r "s|^.*!!(.+)!!.*$|\1|g")
+        elif [[ "$darwin" == true ]]; then
+            CURRENT=$(echo "$PATH" | sed -E "s|${DRMAN_CANDIDATES_DIR}/${candidate}/([^/]+)/bin|!!\1!!|1" | sed -E "s|^.*!!(.+)!!.*$|\1|g")
+        else
+            CURRENT=$(echo "$PATH" | sed -r "s|${DRMAN_CANDIDATES_DIR}/${candidate}/([^/]+)/bin|!!\1!!|1" | sed -r "s|^.*!!(.+)!!.*$|\1|g")
+        fi
 
-		if [[ "$CURRENT" == "current" ]]; then
-			CURRENT=$(readlink "${DRMAN_CANDIDATES_DIR}/${candidate}/current" | sed "s!${DRMAN_CANDIDATES_DIR}/${candidate}/!!g")
-		fi
-	else
-		CURRENT=""
-	fi
+        # Resolve symbolic link if the current version is set to "current"
+        if [[ "$CURRENT" == "current" ]]; then
+            CURRENT=$(readlink "${DRMAN_CANDIDATES_DIR}/${candidate}/current" | sed "s!${DRMAN_CANDIDATES_DIR}/${candidate}/!!g")
+        fi
+    else
+        CURRENT=""
+    fi
 }
+
+# Example of how to use the script:
+# __drm_current "my_candidate"   # For a specific candidate
+# __drm_current                   # For all candidates
